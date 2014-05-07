@@ -50,12 +50,25 @@ if ([INPREDICATE isKindOfClass:[NSPredicate class]]) {     \
 
 using namespace std;
 
+@interface RLMPrivateChild
+@property (nonatomic) NSUInteger rowIndex;
+@property (nonatomic) NSUInteger columnIndex; // Undefined for RLMRow
+@property (nonatomic, weak) NSObject *object; // RLMTable or RLMRow
+@end
+
+@implementation RLMPrivateChild
+@end
+
 @implementation RLMTable
 {
     tightdb::TableRef m_table;
     id m_parent;
     BOOL m_read_only;
-    RLMRow * m_tmp_row;
+    RLMRow *m_tmp_row;
+
+    // Elements are instances of RLMPrivateChild and are ordered
+    // according to `rowIndex`.
+    NSMutableArray *_children;
 }
 
 - (instancetype)init
@@ -70,6 +83,7 @@ using namespace std;
     self = [super init];
     _objectClass = RLMRow.class;
     _proxyObjectClass = RLMRow.class;
+    _children = [[NSMutableArray alloc] init];
     return self;
 }
 
