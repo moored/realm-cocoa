@@ -145,7 +145,7 @@ static NSString *s_defaultRealmPath = nil;
 static NSArray *s_objectDescriptors = nil;
 
 @implementation RLMRealm {
-    NSRunLoop *_runLoop;
+    NSThread *_thread;
     NSTimer *_updateTimer;
     NSMapTable *_notificationHandlers;
     
@@ -179,7 +179,7 @@ static NSArray *s_objectDescriptors = nil;
     self = [super init];
     if (self) {
         _path = path;
-        _runLoop = [NSRunLoop currentRunLoop];
+        _thread = [NSThread currentThread];
         _notificationHandlers = [NSMapTable mapTableWithKeyOptions:NSPointerFunctionsWeakMemory valueOptions:NSPointerFunctionsWeakMemory];
         _readOnly = readonly;
         _updateTimer = [NSTimer scheduledTimerWithTimeInterval:0.1
@@ -385,7 +385,8 @@ static NSArray *s_objectDescriptors = nil;
             
             // upgratde to write
             LangBindHelper::promote_to_write(*_sharedGroup, *_writeLogs);
-            
+            NSLog(@"promote_to_write: %i", pthread_mach_thread_np(pthread_self()));
+
             // update state and make all objects in this realm writable
             _inWriteTransaction = YES;
         }
@@ -404,7 +405,8 @@ static NSArray *s_objectDescriptors = nil;
     if (self.inWriteTransaction) {
         try {
             LangBindHelper::commit_and_continue_as_read(*_sharedGroup);
-            
+            NSLog(@"commit_and_continue_as_read: %i", pthread_mach_thread_np(pthread_self()));
+
             // update state and make all objects in this realm read-only
             _inWriteTransaction = NO;
 
@@ -412,7 +414,7 @@ static NSArray *s_objectDescriptors = nil;
             NSArray *realms = realmsAtPath(_path);
             for (RLMRealm *realm in realms) {
                 if (![realm isEqual:self]) {
-                    [realm->_runLoop performSelector:@selector(refresh) withObject:realm afterDelay:0.0 inModes:@[NSRunLoopCommonModes]];
+                    [realm performSelector:@selector(refresh) onThread:realm->_thread withObject:nil waitUntilDone:NO];
                 }
             }
             
@@ -475,6 +477,7 @@ static NSArray *s_objectDescriptors = nil;
         // advance transaction if database has changed
         if (_sharedGroup->has_changed()) { // Throws
             LangBindHelper::advance_read(*_sharedGroup, *_writeLogs);
+            NSLog(@"advance_read: %i", pthread_mach_thread_np(pthread_self()));
             
             // send notification that someone else changed the realm
             [self sendNotifications];

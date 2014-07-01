@@ -130,12 +130,9 @@ void RLMDeleteRealmFilesAtPath(NSString *path) {
 #if !defined(SWIFT)
 - (void)waitForExpectationsWithTimeout:(NSTimeInterval)interval handler:(__unused id)noop {
     NSDate *endDate = [NSDate dateWithTimeIntervalSinceNow:interval];
-    NSLog(@"start");
     while (!_expectation->_fulfilled && [endDate timeIntervalSinceNow] > 0) {
         [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:endDate];
     }
-    NSLog(@"end");
-
     if (!_expectation->_fulfilled) {
         XCTFail(@"Wait for expectation timed out after %f seconds", interval);
     }

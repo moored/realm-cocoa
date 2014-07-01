@@ -134,7 +134,7 @@
     });
     
     // this should complete very fast before the timer
-    [self waitForExpectationsWithTimeout:2.0 handler:nil];
+    [self waitForExpectationsWithTimeout:0.001 handler:nil];
     [realm removeNotification:token];
         
     // get object
