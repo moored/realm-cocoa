@@ -23,3 +23,7 @@
 #import <Realm/RLMArray.h>
 #import <Realm/RLMSchema.h>
 #import <Realm/RLMMigration.h>
+
+#import <Realm/RLMTestCase.h>
+#import <Realm/RLMTestObjects.h>
+#import <Realm/RLMPredicateUtil.h>

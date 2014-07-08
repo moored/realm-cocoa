@@ -16,7 +16,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////
 
-#import "RLMTestCase.h"
+#import <Realm/Realm.h>
 
 @interface ArrayTests : RLMTestCase
 @end

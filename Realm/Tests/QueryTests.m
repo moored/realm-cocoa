@@ -16,7 +16,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////
 
-#import "RLMTestCase.h"
+#import <Realm/RLMTestCase.h>
 #import "RLMPredicateUtil.h"
 #import "RLMRealm_Dynamic.h"
 

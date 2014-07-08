@@ -16,7 +16,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////
 
-#import "RLMTestCase.h"
+#import <Realm/Realm.h>
 #import "RLMPredicateUtil.h"
 
 #pragma mark - Test Objects

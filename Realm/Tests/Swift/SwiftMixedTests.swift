@@ -17,11 +17,12 @@
 ////////////////////////////////////////////////////////////////////////////
 
 import XCTest
+import Realm
 
 class SwiftMixedTests: RLMTestCase {
     
     func testMixedInsert() {
-        let data = "Hello World".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)
+        let data :NSData = "Hello World".dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)
         
         let realm = self.realmWithTestPath()
         
